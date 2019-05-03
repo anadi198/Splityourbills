@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="splityourbills.CreateGroup">
+    <center>
+        <VBox BorderPane.alignment="CENTER">
+            <children>
+                <HBox>
+                    <children>
+                        <Label text="Enter the group's name:" />
+                        <JFXTextField fx:id="group_name" />
+                    </children>
+                </HBox>
+                <HBox>
+               <children>
+                  <JFXButton fx:id="add_member" text="Add member" />
+               </children>
+                </HBox>
+                <JFXButton fx:id="grp_create_creds" text="Create group">
+                    <VBox.margin>
+                        <Insets left="10.0" top="10.0" />
+                    </VBox.margin>
+                </JFXButton>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

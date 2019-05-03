@@ -41,7 +41,7 @@ public class LoginManager {
             scene.setRoot((Parent) loader.load());
             CreateGroup controller =
                     loader.<CreateGroup>getController();
-            controller.initManager(this, uc);
+            controller.initManager(this, uc, scene);
         } catch (IOException ex) {
             Logger.getLogger(CreateGroup.class.getName()).log(Level.SEVERE, null, ex);
         }
