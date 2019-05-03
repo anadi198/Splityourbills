@@ -58,6 +58,7 @@ public class LoginScreen
 
 //    }
     public void initManager(final LoginManager loginManager) {
+
             sign_in.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
@@ -94,7 +95,11 @@ public class LoginScreen
                     //error
                  }
                 }});
-
+        sign_up.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                loginManager.showSignupScreen();
+            }});
     }
 //    @FXML
 //    public void signupButtonClicked()

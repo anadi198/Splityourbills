@@ -10,6 +10,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -20,7 +21,19 @@ public class DB {
 
     // get the api-key (ie: 'tR7u9Sqt39qQauLzXmRycXag18Z2')
     public static String firebase_apiKey = "AIzaSyAyLMUYMdIjiy5oJDcYqpoV-oeoJTtnF-8";
-    public static String getUsername(String localId)  throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    public static void storeGroup(String group_name, UserCred uc, long time, ArrayList<String> arrStr) throws FirebaseException, IOException, JacksonUtilityException
+    {
+        Firebase firebase = new Firebase( firebase_baseUrl );
+        String localId = uc.localId.replace("\"","%22");
+        FirebaseResponse response;
+        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+        dataMap.put("Group", group_name);
+        dataMap.put("Created by", uc.localId);
+        dataMap.put("Members", arrStr);
+        dataMap.put("Time", time);
+        response = firebase.patch(localId, dataMap);
+    }
+    public static String getUsername(String localId) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
     {
         Firebase firebase = new Firebase( firebase_baseUrl );
         localId = localId.replace("\"","%22");
@@ -46,7 +59,7 @@ public class DB {
         // create the firebase
         Firebase firebase = new Firebase( firebase_baseUrl );
         // "DELETE" (the fb4jDemo-root)
-        FirebaseResponse response = firebase.delete();
+        FirebaseResponse response;
 
 
         // "PUT" (test-map into the fb4jDemo-root)
