@@ -32,7 +32,20 @@ public class LoginManager {
     public void logout() {
         showLoginScreen();
     }
-
+    public void createGroup(UserCred uc)
+    {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/Create-group.fxml")
+            );
+            scene.setRoot((Parent) loader.load());
+            CreateGroup controller =
+                    loader.<CreateGroup>getController();
+            controller.initManager(this, uc);
+        } catch (IOException ex) {
+            Logger.getLogger(CreateGroup.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public void showLoginScreen() {
         try {
             FXMLLoader loader = new FXMLLoader(

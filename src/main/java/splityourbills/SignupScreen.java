@@ -1,6 +1,5 @@
 package splityourbills;
 
-import com.google.appengine.api.users.User;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -72,22 +71,7 @@ public class SignupScreen {
                     JsonNode idNode = rootNode.path("localId");
                     String localId = idNode.toString();
                     DB.storeUser(localId,id,email);
-//                    String tmpdir = System.getProperty("java.io.tmpdir");
-//                    new File(tmpdir+"/splityourbills").mkdirs();
-//                    File localIdTemp = null; //localIdTemp.delete()
-//                    try {
-//                        //Create two temporary files.
-//                        localIdTemp = File.createTempFile("localId", ".txt");
-//                    } catch (IOException ex) {
-//                        System.err.println("An IOException was caught: " + ex.getMessage());
-//                        ex.printStackTrace();
-//                    }
-//                    try {
-//                        Files.write(Paths.get(tmpdir + "splityourbills/localId.txt"), localId.getBytes());
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-                    UserCred uc = new UserCred(localId, id);
+                    UserCred uc = new UserCred(localId, id, email);
                     loginManager.authenticated(uc);
                 }
                 else
