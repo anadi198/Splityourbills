@@ -11,6 +11,8 @@ import net.thegreshams.firebase4j.error.JacksonUtilityException;
 
 import java.io.IOException;
 
+import static splityourbills.SignupScreen.isValid;
+
 
 public class LoginScreen
 {
@@ -62,18 +64,27 @@ public class LoginScreen
 
                  try{
                      String email = email_text.getText().trim();
-                     String password = pwd_text.getText();
-                     String localId = Signin.signIn(email, password);
-                     if(localId!="Error")
+                     boolean flag = isValid(email);
+                     if(flag==false)
                      {
-                         String username;
-                         username = DB.getUsername(localId);
-                         UserCred uc = new UserCred(localId, username, email);
-                         loginManager.authenticated(uc);
+                         //TODO: prompt to reenter
                      }
                      else
                      {
-                         //TODO: Reset fields error
+                         String password = pwd_text.getText();
+                         String localId = Signin.signIn(email, password);
+                         if(localId!="Error")
+                         {
+                             String username;
+                             username = DB.getUsername(localId);
+                             UserCred uc = new UserCred(localId, username, email);
+                             loginManager.authenticated(uc);
+                         }
+                         else
+                         {
+                             //TODO: Reset fields error
+                         }
+
                      }
                  }
                  catch (

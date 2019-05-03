@@ -10,19 +10,30 @@
 
 <BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="splityourbills.CreateGroup">
     <center>
-        <VBox BorderPane.alignment="CENTER">
+        <VBox prefHeight="323.0" prefWidth="477.0" BorderPane.alignment="CENTER">
             <children>
                 <HBox>
                     <children>
-                        <Label text="Enter the group's name:" />
-                        <JFXTextField fx:id="group_name" />
+                        <JFXTextField fx:id="group_name" alignment="CENTER" prefHeight="25.0" prefWidth="172.0" promptText="Enter the group's name">
+                     <HBox.margin>
+                        <Insets left="10.0" top="10.0" />
+                     </HBox.margin></JFXTextField>
                     </children>
                 </HBox>
                 <HBox>
                <children>
-                  <JFXButton fx:id="add_member" text="Add member" />
+                  <JFXTextField fx:id="members" alignment="CENTER" editable="false" prefHeight="25.0" prefWidth="172.0" promptText="Added members appear here">
+                     <HBox.margin>
+                        <Insets left="10.0" top="10.0" />
+                     </HBox.margin>
+                  </JFXTextField>
                </children>
                 </HBox>
+            <JFXButton fx:id="add_member" alignment="CENTER" text="Add member" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </VBox.margin>
+            </JFXButton>
                 <JFXButton fx:id="grp_create_creds" text="Create group">
                     <VBox.margin>
                         <Insets left="10.0" top="10.0" />
