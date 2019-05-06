@@ -6,6 +6,7 @@ import net.thegreshams.firebase4j.model.FirebaseResponse;
 import net.thegreshams.firebase4j.service.Firebase;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -21,17 +22,62 @@ public class DB {
 
     // get the api-key (ie: 'tR7u9Sqt39qQauLzXmRycXag18Z2')
     public static String firebase_apiKey = "AIzaSyAyLMUYMdIjiy5oJDcYqpoV-oeoJTtnF-8";
+
+    public static Group[] findGroups(String nick) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    {
+        ArrayList<String> groups = new ArrayList<>();
+        String Url = "https://splityourbills.firebaseio.com/"+nick;
+        Firebase firebase = new Firebase(Url);
+        FirebaseResponse response = firebase.get();
+        Map<String, Object> dataMap = new LinkedHashMap();
+        System.out.println("RESPIONSE: "+response.getBody());
+        dataMap.putAll(response.getBody());
+        dataMap.remove("Email");
+        System.out.println(dataMap); //map of groups with key as their timestamps
+        int size = dataMap.size();//how many groups
+        System.out.println("SIZE"+size);
+        Group[] g = new Group[size];
+        int i = 0;
+        //Traversing map
+        for(Map.Entry<String, Object> entry:dataMap.entrySet()){
+            String time=entry.getKey();
+            System.out.println("TIME"+time);
+            Object o = entry.getValue();
+            System.out.println("OBJECT"+o);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+            JsonNode rootNode = objectMapper.readTree(o.toString().replace("=",":")); //convert Object to String and read it as a json
+            String group, owner;
+            group = rootNode.path("Group").toString().trim();
+            owner = rootNode.path("Owner").toString().trim();
+            g[i] = new Group(time, group, owner);
+            i++;
+        }
+        return g;
+    }
     public static void storeGroup(String group_name, UserCred uc, long time, ArrayList<String> arrStr) throws FirebaseException, IOException, JacksonUtilityException
     {
+        String Time = Long.toString(time);
         Firebase firebase = new Firebase( firebase_baseUrl );
-        String localId = uc.localId.replace("\"","%22");
+        String localId = uc.localId.replace("\"","");
         FirebaseResponse response;
         Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
         dataMap.put("Group", group_name);
-        dataMap.put("Created by", uc.localId);
+        dataMap.put("Created by", localId);
         dataMap.put("Members", arrStr);
-        dataMap.put("Time", time);
-        response = firebase.patch(localId, dataMap);
+        Map<String, Object> dataMap2 = new LinkedHashMap<String, Object>();
+        dataMap2.put(Time, dataMap);
+        response = firebase.patch("Groups", dataMap2);
+        for(int i = 0; i<arrStr.size(); i++) //now just traverse through nicknames to find all groups
+        {
+            String t = Long.toString(time);
+            String nick = arrStr.get(i);
+            Map<String, Object> dataMap3 = new LinkedHashMap<>();
+            dataMap3.put("Group","\""+group_name+"\"");
+            dataMap3.put("Owner","\""+localId+"\"");
+            Firebase firebase1 = new Firebase( firebase_baseUrl+"/"+nick );
+            firebase1.patch(t, dataMap3);
+        }
     }
     public static String getUsername(String localId) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
     {
@@ -53,6 +99,25 @@ public class DB {
         dataMap.put("Nickname", nickname);
         dataMap.put("Email",email);
         response = firebase.put(localId, dataMap);
+        response = firebase.get("/");
+        Map<String, Object> dataMap1 = new LinkedHashMap<String, Object>();
+        dataMap1.put("Email", email);
+        response = firebase.put(nickname,dataMap1);
+    }
+    public static boolean checkUser(String nickname) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    {
+        Firebase firebase = new Firebase (firebase_baseUrl);
+        FirebaseResponse response;
+        response = firebase.get(nickname);
+        if(response.getRawBody().trim().contains("Email"))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
     public static void main(String[] args) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
     {

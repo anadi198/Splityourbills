@@ -3,6 +3,8 @@ package splityourbills;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import net.thegreshams.firebase4j.error.FirebaseException;
+import net.thegreshams.firebase4j.error.JacksonUtilityException;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -82,7 +84,7 @@ public class LoginManager {
             WelcomeScreen controller =
                     loader.<WelcomeScreen>getController();
             controller.initUsername(this, uc);
-        } catch (IOException ex) {
+        } catch (IOException | FirebaseException | JacksonUtilityException ex) {
             Logger.getLogger(LoginManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -50,7 +50,7 @@
                 </Label>
                 <JFXTextField fx:id="email_text" focusColor="#b0003a" maxHeight="-Infinity" maxWidth="-Infinity" promptText="Your email here" unFocusColor="LIGHTGRAY" GridPane.columnIndex="1" />
                 <JFXPasswordField fx:id="pwd_text" focusColor="#b0003a" maxWidth="-Infinity" promptText="Your password here" unFocusColor="LIGHTGRAY" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <JFXButton fx:id="sign_in" alignment="TOP_LEFT" ripplerFill="#b0003a" style="-fx-border-color: #b0003a;" text="Sign in" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <JFXButton fx:id="sign_in" alignment="TOP_LEFT" defaultButton="true" ripplerFill="#b0003a" style="-fx-border-color: #b0003a;" text="Sign in" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             </children>
         </GridPane>
     </center>
