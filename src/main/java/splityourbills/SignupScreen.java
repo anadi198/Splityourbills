@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import net.thegreshams.firebase4j.error.FirebaseException;
 import net.thegreshams.firebase4j.error.JacksonUtilityException;
 import net.thegreshams.firebase4j.model.FirebaseResponse;
@@ -53,11 +54,16 @@ public class SignupScreen {
         password = pwd_text.getText();
         password_repeat = pwd_text_repeat.getText();
         boolean flag = isValid(email);
-        //TODO: add checks to make sure no field is empty
-
-        if(flag==false)
+        if(password.isEmpty() || email.isEmpty() || password_repeat.isEmpty() || id.isEmpty())
         {
-            //prompt or alert
+            AlertHelper.showAlert(Alert.AlertType.ERROR, loginManager.primaryStage(), "Incomplete form!",
+                    "Please fill all the fields.");
+        }
+
+        else if(flag==false)
+        {
+            AlertHelper.showAlert(Alert.AlertType.ERROR, loginManager.primaryStage(), "Invalid email!",
+                    "The email address you entered isn't valid.");
         }
         else {
             if (password.equals(password_repeat))
@@ -65,7 +71,6 @@ public class SignupScreen {
                 FirebaseResponse response = Signup.register(email, password);
                 if (response.getSuccess()==true)
                 {
-                    System.out.println("SIGN UP WORKED");
                     ObjectMapper objectMapper = new ObjectMapper();
                     JsonNode rootNode = objectMapper.readTree(response.getRawBody());
                     JsonNode idNode = rootNode.path("localId");
@@ -76,13 +81,15 @@ public class SignupScreen {
                 }
                 else
                 {
-                    //failed to sign in
+                    AlertHelper.showAlert(Alert.AlertType.ERROR, loginManager.primaryStage(), "Error",
+                            "Signup failed.");
                 }
 
             }
             else
             {
-                //prompt or alert
+                AlertHelper.showAlert(Alert.AlertType.ERROR, loginManager.primaryStage(), "Passwords don't match",
+                        "Please make sure the passwords match.");
             }
         }
     }
@@ -98,7 +105,7 @@ public class SignupScreen {
                         FirebaseException | IOException | JacksonUtilityException e
                 )
                 {
-                    //error
+
                 }
             }});
 

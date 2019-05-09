@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
 import net.thegreshams.firebase4j.error.FirebaseException;
 import net.thegreshams.firebase4j.error.JacksonUtilityException;
@@ -17,9 +18,9 @@ import java.util.Date;
 import static splityourbills.DB.checkUser;
 
 public class CreateGroup {
-public JFXButton grp_create_creds, add_member;
+public JFXButton grp_create_creds, add_member, cancel;
 public JFXTextField members;
-String members_list, group;
+String members_list;
 ArrayList<String> arrStr = new ArrayList<String>();
 @FXML
 private JFXTextField group_name;
@@ -70,8 +71,15 @@ private JFXTextField group_name;
                 }
                 else
                 {
-                    //TODO: user doesn't exist
+                    AlertHelper.showAlert(Alert.AlertType.ERROR, loginManager.primaryStage(), "User doesn't exist",
+                            "Please enter a valid username.");
                 }
+            }});
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                loginManager.showMainView(uc);
             }});
 
     }

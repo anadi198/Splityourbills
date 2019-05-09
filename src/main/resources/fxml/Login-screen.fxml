@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.paint.*?>
 <?import com.jfoenix.controls.*?>
@@ -39,6 +40,13 @@
                     <padding>
                         <Insets left="5.0" right="10.0" />
                     </padding>
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true" scaleX="0.7" scaleY="0.7">
+                     <image>
+                        <Image url="@../Icons/icons8-envelope-24.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
                 </Label>
                 <Label minWidth="100.0" text="Password:" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                     <padding>
@@ -47,10 +55,24 @@
                     <GridPane.margin>
                         <Insets />
                     </GridPane.margin>
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true" scaleX="0.7" scaleY="0.7">
+                     <image>
+                        <Image url="@../Icons/icons8-password-24.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
                 </Label>
                 <JFXTextField fx:id="email_text" focusColor="#b0003a" maxHeight="-Infinity" maxWidth="-Infinity" promptText="Your email here" unFocusColor="LIGHTGRAY" GridPane.columnIndex="1" />
                 <JFXPasswordField fx:id="pwd_text" focusColor="#b0003a" maxWidth="-Infinity" promptText="Your password here" unFocusColor="LIGHTGRAY" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <JFXButton fx:id="sign_in" alignment="TOP_LEFT" defaultButton="true" ripplerFill="#b0003a" style="-fx-border-color: #b0003a;" text="Sign in" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <JFXButton fx:id="sign_in" alignment="TOP_LEFT" buttonType="RAISED" defaultButton="true" ripplerFill="#b0003a" text="Sign in" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8">
+                     <image>
+                        <Image url="@../Icons/icons8-import-24.png" />
+                     </image>
+                  </ImageView>
+               </graphic></JFXButton>
             </children>
         </GridPane>
     </center>
@@ -67,7 +89,14 @@
                                 <Insets right="5.0" />
                             </HBox.margin>
                         </Label>
-                        <JFXButton fx:id="sign_up" alignment="TOP_CENTER" ripplerFill="#b0003a" style="-fx-border-color: #b0003a;" text="Sign up" />
+                        <JFXButton fx:id="sign_up" alignment="TOP_CENTER" buttonType="RAISED" ripplerFill="#b0003a" text="Sign up">
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8">
+                           <image>
+                              <Image url="@../Icons/icons8-add-user-male-24.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
                     </children>
                     <padding>
                         <Insets bottom="5.0" />

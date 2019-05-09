@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import net.thegreshams.firebase4j.error.FirebaseException;
 import net.thegreshams.firebase4j.error.JacksonUtilityException;
 
@@ -22,41 +23,6 @@ public class LoginScreen
     @FXML
     private JFXPasswordField pwd_text;
     public JFXTextField email_text;
-
-//    public void setMain(Main main){
-//        this.main = main;
-//    }
-//    public void setScene2(Scene scene2){
-//        this.scene2 = scene2;
-//    }
-//    public void setScene3(Scene scene3){this.scene3 = scene3;}
-//    @FXML
-//    public void switchScene()
-//    {
-//        main.setScene(scene2);
-//    }
-//    @FXML
-//    public void goAhead(){ main.setScene(scene3);}
-//   @FXML
-//    public void loginButtonClicked() throws FirebaseException, IOException, JacksonUtilityException, InterruptedException {
-
-//        String tmpdir = System.getProperty("java.io.tmpdir");
-//        new File(tmpdir+"/splityourbills").mkdirs();
-//        File localIdTemp = null; //localIdTemp.delete()
-//        try {
-//            //Create two temporary files.
-//            localIdTemp = File.createTempFile("localId", ".txt");
-//        } catch (IOException ex) {
-//            System.err.println("An IOException was caught: " + ex.getMessage());
-//            ex.printStackTrace();
-//        }
-//        try {
-//            Files.write(Paths.get(tmpdir + "splityourbills/localId.txt"), localId.getBytes());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-//    }
     public void initManager(final LoginManager loginManager) {
 
             sign_in.setOnAction(new EventHandler<ActionEvent>() {
@@ -68,7 +34,8 @@ public class LoginScreen
                      boolean flag = isValid(email);
                      if(flag==false)
                      {
-                         //TODO: prompt to reenter
+                         AlertHelper.showAlert(Alert.AlertType.ERROR, loginManager.primaryStage(), "Invalid email",
+                                 "Please enter a valid email address.");
                      }
                      else
                      {
@@ -83,7 +50,9 @@ public class LoginScreen
                          }
                          else
                          {
-                             //TODO: Reset fields error
+                             AlertHelper.showAlert(Alert.AlertType.ERROR, loginManager.primaryStage(), "Error",
+                                     "Signin failed. Please retry.");
+                             pwd_text.clear();
                          }
 
                      }
@@ -101,10 +70,5 @@ public class LoginScreen
                 loginManager.showSignupScreen();
             }});
     }
-//    @FXML
-//    public void signupButtonClicked()
-//    {
-//        switchScene();
-//    }
 }
 

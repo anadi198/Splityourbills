@@ -20,6 +20,10 @@ public class LoginManager {
         this.scene = scene;
         this.primaryStage = primaryStage;
     }
+    public Stage primaryStage()
+    {
+        return primaryStage;
+    }
     public void close()
     {
         primaryStage.close();
@@ -76,15 +80,12 @@ public class LoginManager {
     }
     public void createGroup(UserCred uc)
     {
-        primaryStage.setWidth(640);
-        primaryStage.setHeight(480);
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/create-group.fxml")
             );
             scene.setRoot((Parent) loader.load());
-            primaryStage.setResizable(true);
-            primaryStage.setMinHeight(480);
+            primaryStage.setResizable(false);
             CreateGroup controller =
                     loader.<CreateGroup>getController();
             controller.initManager(this, uc, scene);
@@ -94,10 +95,13 @@ public class LoginManager {
     }
     public void showLoginScreen() {
         try {
+            primaryStage.setWidth(487);
+            primaryStage.setHeight(200);
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/Login-screen.fxml")
             );
             scene.setRoot((Parent) loader.load());
+            primaryStage.setResizable(false);
             LoginScreen controller =
                     loader.<LoginScreen>getController();
             controller.initManager(this);
@@ -107,6 +111,8 @@ public class LoginManager {
     }
     public void showSignupScreen() {
         try {
+            primaryStage.setWidth(487);
+            primaryStage.setHeight(300);
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/Signup-screen.fxml")
             );
@@ -128,7 +134,6 @@ public class LoginManager {
             );
             scene.setRoot((Parent) loader.load());
             primaryStage.setResizable(true);
-            primaryStage.setMinHeight(480);
             WelcomeScreen controller =
                     loader.<WelcomeScreen>getController();
             controller.initUsername(this, uc);

@@ -22,6 +22,33 @@ public class DB {
 
     // get the api-key (ie: 'tR7u9Sqt39qQauLzXmRycXag18Z2')
     public static String firebase_apiKey = "AIzaSyAyLMUYMdIjiy5oJDcYqpoV-oeoJTtnF-8";
+    public static void addUser(String time, ArrayList<String> arrStr)throws FirebaseException, IOException, JacksonUtilityException
+    {
+        String nick = arrStr.get(0);
+        Firebase firebase = new Firebase( firebase_baseUrl+"/Groups/"+time+"/Members/" );
+        FirebaseResponse response = firebase.get();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        JsonNode rootNode = objectMapper.readTree(response.getRawBody());
+        if (rootNode.isArray()) {
+            for (final JsonNode objNode : rootNode) {
+                if(objNode.toString().replace("\"","").equals(arrStr.get(0).replace("\"","")))
+                    continue;
+                arrStr.add(objNode.toString().replace("\"",""));
+            }
+        }
+        Map<String, Object> dataMap = new LinkedHashMap<>();
+        Firebase firebase2 = new Firebase(firebase_baseUrl+"/Groups/"+time);
+        dataMap.put("Members",arrStr);
+        firebase2.patch(dataMap);
+        response = firebase2.get("Group");
+        String group = response.getRawBody();
+        Firebase firebase3 = new Firebase(firebase_baseUrl+"/"+nick.replace("\"",""));
+        Map<String, Object> dataMap1 = new LinkedHashMap<>();
+        dataMap1.put("Group", group);
+        dataMap1.put("Owner", "\"somebody\"");
+        firebase3.patch(time, dataMap1);
+    }
     public static GroupDetails[] getGroupDetails(String time) throws FirebaseException, IOException, JacksonUtilityException
     {
         Firebase firebase = new Firebase(firebase_baseUrl+"/Groups/Data/"+time);
@@ -164,6 +191,17 @@ public class DB {
         System.out.println("RESPIONSE: "+response.getBody());
         dataMap.putAll(response.getBody());
         dataMap.remove("Email");
+        ArrayList<String> s = new ArrayList<>();
+        dataMap.forEach((k,v)->{
+            if(v.toString().contains("Balance"))
+            {
+                s.add(k);
+            }
+        });
+        for(int n = 0; n<s.size(); n++)
+        {
+            dataMap.remove(s.get(n));
+        }
         System.out.println(dataMap); //map of groups with key as their timestamps
         int size = dataMap.size();//how many groups
         System.out.println("SIZE"+size);

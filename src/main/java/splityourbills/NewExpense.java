@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import net.thegreshams.firebase4j.error.FirebaseException;
 import net.thegreshams.firebase4j.error.JacksonUtilityException;
 import org.codehaus.jackson.JsonParseException;
@@ -38,32 +39,55 @@ public class NewExpense
             @Override public void handle(ActionEvent event) {
                 amount = Double.parseDouble(how_much.getText().trim());
                 description = what_for.getText().trim();
-                ObservableList<String> selectedUsers = checkList.getCheckModel().getCheckedItems();
-                double size = selectedUsers.size();
-                amount = amount/(size+1);
-                for (String each: selectedUsers)
+                if(how_much.getText().isEmpty() || description.isEmpty())
                 {
-                    System.out.println(each);
-                    try
-                    {
-                        DB.oweUser(uc, each, amount);
-                        DB.oweThem(uc, each, amount);
-                    }
-                    catch(IOException | FirebaseException | JacksonUtilityException e )
-                    {
-
-                    }
+                    AlertHelper.showAlert(Alert.AlertType.ERROR, loginManager.primaryStage(), "Empty fields",
+                            "Please fill all the fields properly.");
                 }
-                amount = amount*(size+1);
-                try
+                else if(amount.isNaN())
                 {
-                    DB.updateGroup(time, uc, description, amount, selectedUsers);
+                    AlertHelper.showAlert(Alert.AlertType.ERROR, loginManager.primaryStage(), "Not a valid number",
+                            "Please enter a valid amount.");
                 }
-                catch(IOException | FirebaseException | JacksonUtilityException e )
+                else
                 {
 
+                    ObservableList<String> selectedUsers = checkList.getCheckModel().getCheckedItems();
+                    double size = selectedUsers.size();
+                    if(size==0)
+                    {
+                        AlertHelper.showAlert(Alert.AlertType.ERROR, loginManager.primaryStage(), "No users selected",
+                                "You must choose someone from the list.");
+                    }
+                    else
+                    {
+
+                        amount = amount/(size+1);
+                        for (String each: selectedUsers)
+                        {
+                            System.out.println(each);
+                            try
+                            {
+                                DB.oweUser(uc, each, amount);
+                                DB.oweThem(uc, each, amount);
+                            }
+                            catch(IOException | FirebaseException | JacksonUtilityException e )
+                            {
+
+                            }
+                        }
+                        amount = amount*(size+1);
+                        try
+                        {
+                            DB.updateGroup(time, uc, description, amount, selectedUsers);
+                        }
+                        catch(IOException | FirebaseException | JacksonUtilityException e )
+                        {
+
+                        }
+                        loginManager.showGroupScreen(uc, time);
+                    }
                 }
-                loginManager.showGroupScreen(uc, time);
             }
         });
         back.setOnAction(new EventHandler<ActionEvent>() {

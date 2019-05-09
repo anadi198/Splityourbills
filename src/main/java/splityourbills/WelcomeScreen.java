@@ -36,7 +36,7 @@ public class WelcomeScreen
         for(int i=0;i<size;i++)
         {
             groups[i].name = groups[i].name.replace("\"","");
-            listView.getItems().add(new Label(groups[i].name));
+            listView.getItems().add(new Label((i+1)+ ". " + groups[i].name));
         }
         listView.setOnMouseClicked(new ListViewHandler(){
             @Override
@@ -48,7 +48,7 @@ public class WelcomeScreen
         });
         logout.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent event) {
-                loginManager.logout();
+                loginManager.showLoginScreen();
             }
         });
         create_group.setOnAction(new EventHandler<ActionEvent>() {
