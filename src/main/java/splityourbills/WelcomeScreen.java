@@ -22,7 +22,7 @@ class ListViewHandler implements EventHandler<MouseEvent> {
 }
 public class WelcomeScreen
 {
-    public JFXButton logoutButton, create_group;
+    public JFXButton logout, create_group;
     @FXML
     private JFXListView<Label> listView;
     @FXML
@@ -41,10 +41,12 @@ public class WelcomeScreen
         listView.setOnMouseClicked(new ListViewHandler(){
             @Override
             public void handle(javafx.scene.input.MouseEvent event) {
-                System.out.print(listView.getSelectionModel().getSelectedIndex());
+                int index = listView.getSelectionModel().getSelectedIndex();
+                String time = groups[index].time;
+                loginManager.showGroupScreen(uc, time);
             }
         });
-        logoutButton.setOnAction(new EventHandler<ActionEvent>() {
+        logout.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent event) {
                 loginManager.logout();
             }

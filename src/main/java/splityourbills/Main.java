@@ -62,7 +62,7 @@ public class Main extends Application {
 //        window.show();
         Scene scene = new Scene(new Pane(), 487, 169);
 
-        LoginManager loginManager = new LoginManager(scene);
+        LoginManager loginManager = new LoginManager(scene, primaryStage);
         loginManager.showLoginScreen();
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);

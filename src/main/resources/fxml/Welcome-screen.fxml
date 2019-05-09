@@ -27,15 +27,26 @@
       </HBox>
    </top>
    <bottom>
-      <JFXButton fx:id="logoutButton" ripplerFill="#b0003a" style="-fx-border-color: #b0003a;" text="Logout" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="10.0" top="10.0" />
-         </BorderPane.margin></JFXButton>
+      <HBox BorderPane.alignment="CENTER">
+         <children>
+            <JFXButton fx:id="create_group" ripplerFill="#b0003a" style="-fx-border-color: #b0003a;" text="Create a new group">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" top="10.0" />
+               </HBox.margin>
+            </JFXButton>
+            <Region HBox.hgrow="ALWAYS" />
+            <JFXButton fx:id="logout" ripplerFill="#b0003a" style="-fx-border-color: #b0003a;" text="Logout">
+               <HBox.margin>
+                  <Insets bottom="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </JFXButton>
+         </children>
+      </HBox>
    </bottom>
-   <left>
+   <center>
       <VBox BorderPane.alignment="CENTER">
          <children>
-            <Label text="Here are your groups:">
+            <Label text="Your groups :">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" top="10.0" />
                </VBox.margin>
@@ -46,21 +57,8 @@
                   <Font size="14.0" />
                </font>
             </Label>
+            <JFXListView fx:id="listView" />
          </children>
       </VBox>
-   </left>
-   <center>
-      <JFXListView fx:id="listView" style="-fx-background-color: #D1C4E9;" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets left="10.0" right="10.0" top="10.0" />
-         </BorderPane.margin>
-      </JFXListView>
    </center>
-   <right>
-      <JFXButton fx:id="create_group" ripplerFill="#b0003a" style="-fx-border-color: #b0003a;" text="Create a new group" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets right="10.0" />
-         </BorderPane.margin>
-      </JFXButton>
-   </right>
 </BorderPane>

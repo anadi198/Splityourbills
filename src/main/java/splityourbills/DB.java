@@ -1,5 +1,6 @@
 package splityourbills;
 
+import javafx.collections.ObservableList;
 import net.thegreshams.firebase4j.error.FirebaseException;
 import net.thegreshams.firebase4j.error.JacksonUtilityException;
 import net.thegreshams.firebase4j.model.FirebaseResponse;
@@ -7,14 +8,13 @@ import net.thegreshams.firebase4j.service.Firebase;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import java.util.*;
 
 public class DB {
     // get the base-url (ie: 'http://gamma.firebase.com/username')
@@ -22,10 +22,141 @@ public class DB {
 
     // get the api-key (ie: 'tR7u9Sqt39qQauLzXmRycXag18Z2')
     public static String firebase_apiKey = "AIzaSyAyLMUYMdIjiy5oJDcYqpoV-oeoJTtnF-8";
+    public static GroupDetails[] getGroupDetails(String time) throws FirebaseException, IOException, JacksonUtilityException
+    {
+        Firebase firebase = new Firebase(firebase_baseUrl+"/Groups/Data/"+time);
+        FirebaseResponse response = firebase.get();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        JsonNode rootNode = objectMapper.readTree(response.getRawBody());
+        System.out.println(rootNode);
+        List<JsonNode> listOfNodes = rootNode.findParents("Amount");
+        int size = listOfNodes.size();
+        GroupDetails[] gd = new GroupDetails[size];
+        Iterator<String> it = rootNode.getFieldNames();
+        int i = 0;
+        while (it.hasNext())
+        {
+            String key = it.next();
+            JsonNode messageNode = rootNode.path(key);
+            gd[i] = new GroupDetails();
+            gd[i].amount = messageNode.path("Amount").getDoubleValue();
+            gd[i].description = messageNode.path("Description").toString();
+            gd[i].time = key;
+            gd[i].creator = messageNode.path("Creator").toString();
+            JsonNode usersNode = messageNode.get("Shared with");
+            TypeReference<List<String>> typeRef = new TypeReference<List<String>>(){};
+            List<String> list = objectMapper.readValue(usersNode.traverse(), typeRef);
+            for (String s : list) {
+                gd[i].users.add(s);
+            }
+            i++;
+        }
 
+        return gd;
+    }
+    public static UserDetails[] getDetails(UserCred uc, String time) throws FirebaseException, IOException, JacksonUtilityException
+    {
+        String Url = "https://splityourbills.firebaseio.com/"+uc.username;
+        Firebase firebase = new Firebase(Url);
+        FirebaseResponse response = firebase.get();
+        ArrayList<String> users = new ArrayList<>();
+        users = findUsers(time);
+        System.out.println("USERS ARE: "+users);
+        int size = users.size();
+        UserDetails[] ud = new UserDetails[size];
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(response.getRawBody());
+        System.out.println("ROOTNODE"+rootNode);
+        int j = 0;
+        for(int i =0; i<size; i++)
+        {
+            if(users.get(i).replace("\"","").equals(uc.username)==false)
+            {
+                JsonNode userNode = rootNode.path(users.get(i).replace("\"",""));
+                System.out.println("USERNODE: "+userNode+"for user:"+users.get(i));
+                if(userNode.toString().contains("Balance"))
+                {
+                    ud[j] = new UserDetails();
+                    ud[j].nickname = users.get(i).replace("\"","");
+                    JsonNode debtNode = userNode.path("Balance");
+                    ud[j].balance = Double.parseDouble(debtNode.toString());
+                    j++;
+                }
+                else
+                {
+                    System.out.println("NULLLOL");
+                }
+            }
+        }
+        return ud;
+    }
+    public static void updateGroup(String time, UserCred uc, String description, Double amount, ObservableList selectedUsers) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    {
+        Firebase firebase = new Firebase( firebase_baseUrl+"/Groups/Data/"+time );
+        FirebaseResponse response;
+        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+        dataMap.put("Creator", uc.username);
+        dataMap.put("Description", description);
+        dataMap.put("Amount", amount);
+        dataMap.put("Shared with", selectedUsers);
+        Date date = new Date();
+        long time_curr = date.getTime();
+        String current_time = Long.toString(time_curr);
+        response = firebase.put(current_time, dataMap);
+    }
+    public static void oweUser(UserCred uc, String nickname, Double amount) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    {
+        nickname.replace("\"","");
+        Firebase firebase = new Firebase( firebase_baseUrl+"/"+nickname );
+        FirebaseResponse response;
+        response = firebase.get(uc.username.replace("\"",""));
+        Double balance;
+        if(response.getRawBody().contains("Balance"))
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(response.getRawBody());
+            JsonNode memberNode = rootNode.path("Balance");
+            balance = Double.parseDouble(memberNode.toString()); //if it's negative then nickname owes uc.nickname
+            balance -= amount;
+        }
+        else
+        {
+            balance = 0.0;
+            balance -= amount;
+        }
+
+        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+        dataMap.put("Balance", balance);
+        response = firebase.patch(uc.username.replace("\"",""), dataMap);
+    }
+    public static void oweThem(UserCred uc, String nickname, Double amount) throws FirebaseException, JacksonUtilityException, IOException
+    {
+        String ucnick = uc.username.replace("\"","");
+        Firebase firebase = new Firebase( firebase_baseUrl+"/"+ucnick );
+        FirebaseResponse response;
+        response = firebase.get(nickname.replace("\"",""));
+        Double balance;
+        if(response.getRawBody().contains("Balance"))
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(response.getRawBody());
+            JsonNode memberNode = rootNode.path("Balance");
+            balance = Double.parseDouble(memberNode.toString()); //if it's negative then nickname owes uc.nickname
+            balance += amount;
+        }
+        else
+        {
+            balance = 0.0;
+            balance += amount;
+        }
+
+        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+        dataMap.put("Balance", balance);
+        response = firebase.patch(nickname.replace("\"",""), dataMap);
+    }
     public static Group[] findGroups(String nick) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
     {
-        ArrayList<String> groups = new ArrayList<>();
         String Url = "https://splityourbills.firebaseio.com/"+nick;
         Firebase firebase = new Firebase(Url);
         FirebaseResponse response = firebase.get();
@@ -39,11 +170,10 @@ public class DB {
         Group[] g = new Group[size];
         int i = 0;
         //Traversing map
-        for(Map.Entry<String, Object> entry:dataMap.entrySet()){
+        for(Map.Entry<String, Object> entry:dataMap.entrySet())
+        {
             String time=entry.getKey();
-            System.out.println("TIME"+time);
             Object o = entry.getValue();
-            System.out.println("OBJECT"+o);
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             JsonNode rootNode = objectMapper.readTree(o.toString().replace("=",":")); //convert Object to String and read it as a json
@@ -54,6 +184,21 @@ public class DB {
             i++;
         }
         return g;
+    }
+    public static ArrayList<String> findUsers(String time) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    {
+        ArrayList<String> users = new ArrayList<>();
+        String Url = "https://splityourbills.firebaseio.com/Groups/"+time;
+        Firebase firebase = new Firebase(Url);
+        FirebaseResponse response = firebase.get();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(response.getRawBody());
+        JsonNode memberNode = rootNode.path("Members");
+        Iterator<JsonNode> iterator = memberNode.getElements();
+        while (iterator.hasNext()) {
+            users.add(iterator.next().toString());
+        }
+        return users;
     }
     public static void storeGroup(String group_name, UserCred uc, long time, ArrayList<String> arrStr) throws FirebaseException, IOException, JacksonUtilityException
     {

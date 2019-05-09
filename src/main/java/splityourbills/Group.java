@@ -8,4 +8,8 @@ public class Group {
         this.name = name;
         this.owner = owner;
     }
+    Group()
+    {
+
+    }
 }

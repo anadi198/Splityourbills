@@ -25,5 +25,6 @@
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.11" level="project" />
     <orderEntry type="library" name="Maven: com.google.appengine:appengine-api-1.0-sdk:1.9.73" level="project" />
     <orderEntry type="library" name="org.apache.commons:commons-vfs2:2.3" level="project" />
+    <orderEntry type="library" name="controlsfx-8.40.15" level="project" />
   </component>
 </module>
