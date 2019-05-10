@@ -39,6 +39,8 @@ public class WelcomeScreen
             t.setDaemon(true);
             return t ;
         });
+        listView.setDepth(1);
+        listView.setExpanded(true);
         label.setText("Welcome, "+uc.username+"!");
         Task<Group[]> find_groups = new Task<Group[]>(){
             @Override
@@ -47,7 +49,7 @@ public class WelcomeScreen
                 {
                     return findGroups(uc.username);
                 }
-                catch(IOException | FirebaseException | JacksonUtilityException e){}
+                catch(IOException | FirebaseException e){}
                 return new Group[0];
             }
         };
@@ -66,7 +68,7 @@ public class WelcomeScreen
                 public void handle(javafx.scene.input.MouseEvent event) {
                     int index = listView.getSelectionModel().getSelectedIndex();
                     String time = groups[index].time;
-                    loginManager.showGroupScreen(uc, time);
+                    loginManager.showGroupScreen(uc, time, groups[index].name);
                 }
             });
             pForm.getDialogStage().close();

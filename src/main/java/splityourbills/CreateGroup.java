@@ -58,7 +58,7 @@ private JFXTextField group_name;
                 {
                     flag = checkUser(member);
                 }
-                catch(FirebaseException | JacksonUtilityException | IOException e)
+                catch(FirebaseException | IOException e)
                 {
                     //
                 }

@@ -20,8 +20,8 @@ public class ProgressForm {
     public ProgressForm() {
         dialogStage = new Stage();
         dialogStage.initStyle(StageStyle.UNDECORATED);
-        dialogStage.setWidth(300);
-        pb.setPrefWidth(300);
+        dialogStage.setWidth(200);
+        pb.setPrefWidth(200);
         dialogStage.setResizable(false);
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();

@@ -3,6 +3,7 @@ package splityourbills;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -14,18 +15,32 @@ import org.controlsfx.control.CheckListView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import static splityourbills.DB.findUsers;
 
 public class NewExpense
 {
+    private Executor exec, exec1 ;
     public CheckListView checkList;
     public JFXButton add_expense, back;
     public JFXTextField what_for, how_much;
     public Double amount;
     public String description;
-    public void initManager(final LoginManager loginManager, UserCred uc, String time)throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    public void initManager(final LoginManager loginManager, UserCred uc, String time, String groupname)throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
     {
+        ProgressForm pForm = new ProgressForm();
+        exec = Executors.newCachedThreadPool(runnable -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t ;
+        });
+        exec1 = Executors.newCachedThreadPool(runnable -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t ;
+        });
         ArrayList<String> users = new ArrayList<>();
             users = findUsers(time);
             for(int i=0; i<users.size(); i++)
@@ -66,33 +81,53 @@ public class NewExpense
                         for (String each: selectedUsers)
                         {
                             System.out.println(each);
-                            try
-                            {
-                                DB.oweUser(uc, each, amount);
-                                DB.oweThem(uc, each, amount);
-                            }
-                            catch(IOException | FirebaseException | JacksonUtilityException e )
-                            {
+                            Task<String> owe_user = new Task<String>(){
+                                @Override
+                                public String call()
+                                {
+                                    try{
+                                        DB.oweUser(uc, each, amount);
+                                        DB.oweThem(uc, each, amount);
+                                    }
+                                    catch(IOException | JacksonUtilityException | FirebaseException e)
+                                    {
 
-                            }
+                                    }
+                                    return "Error";
+                                }
+                            };
+                            // binds progress of progress bars to progress of task:
+                            pForm.activateProgressBar(owe_user);
+                            owe_user.setOnSucceeded(e2 -> {
+                                pForm.getDialogStage().close();
+                            });
+                            pForm.getDialogStage().show();
+                            exec.execute(owe_user);
                         }
                         amount = amount*(size+1);
-                        try
-                        {
-                            DB.updateGroup(time, uc, description, amount, selectedUsers);
-                        }
-                        catch(IOException | FirebaseException | JacksonUtilityException e )
-                        {
+                        Task<String> update = new Task<String>(){
+                            @Override
+                            public String call()
+                            {
+                                try{
+                                    DB.updateGroup(time, uc, description, amount, selectedUsers);
+                                }
+                                catch(IOException | JacksonUtilityException | FirebaseException e)
+                                {
 
-                        }
-                        loginManager.showGroupScreen(uc, time);
+                                }
+                                return "Error";
+                            }
+                        };
+                        exec1.execute(update);
+                        loginManager.showGroupScreen(uc, time, groupname);
                     }
                 }
             }
         });
         back.setOnAction(new EventHandler<ActionEvent>() {
         @Override public void handle(ActionEvent event) {
-            loginManager.showGroupScreen(uc, time);
+            loginManager.showGroupScreen(uc, time, groupname);
         }
     });
     }

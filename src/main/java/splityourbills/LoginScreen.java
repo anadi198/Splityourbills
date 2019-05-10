@@ -27,6 +27,9 @@ public class LoginScreen
     public JFXTextField email_text;
     public void initManager(final LoginManager loginManager) {
         ProgressForm pForm = new ProgressForm();
+        /**
+         * Find a non-GUI background thread
+         */
         exec = Executors.newCachedThreadPool(runnable -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -50,6 +53,9 @@ public class LoginScreen
                  else
                  {
                      String password = pwd_text.getText();
+                     /**
+                      * Assign a task that returns a String and has a call method in which we call our database operation
+                      */
                      Task<String> signin = new Task<String>(){
                          @Override
                          public String call()
@@ -64,7 +70,13 @@ public class LoginScreen
                              return "Error";
                          }
                      };
+                     /**
+                      * This code is executed upon successful execution of call() and can be used to handle the GUI events finally.
+                      */
                      signin.setOnSucceeded(e -> {
+                         /**
+                          * Get the value from return of Task's call() method.
+                          */
                          String localID = signin.getValue();
                          if (localID != "Error") {
                                  Task<String> get_username = new Task<String>(){
@@ -74,7 +86,7 @@ public class LoginScreen
                                          try{
                                              return DB.getUsername(localID);
                                          }
-                                         catch(IOException | JacksonUtilityException | FirebaseException e)
+                                         catch(IOException | FirebaseException e)
                                          {
 
                                          }

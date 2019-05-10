@@ -28,10 +28,17 @@ public class GroupScreen {
     public MenuItem menu_close, add_user, delete_user;
     public JFXListView list_summary, list_history;
     public JFXButton new_expense, back;
+    public Label label;
     ProgressForm pForm = new ProgressForm();
 
-    public void initManager(final LoginManager loginManager, UserCred uc, String time)throws FirebaseException, IOException, JacksonUtilityException
+    public void initManager(final LoginManager loginManager, UserCred uc, String time, String groupname)throws FirebaseException, IOException, JacksonUtilityException
     {
+        label.setText(groupname);
+        list_history.setExpanded(true);
+        list_history.setDepth(1);
+        list_summary.setExpanded(true);
+        list_summary.setDepth(1);
+
         exec = Executors.newCachedThreadPool(runnable -> {
             Thread t = new Thread(runnable);
             t.setDaemon(true);
@@ -42,57 +49,7 @@ public class GroupScreen {
             t.setDaemon(true);
             return t ;
         });
-        Task<UserDetails[]> get_details = new Task<UserDetails[]>() {
-            @Override
-            public UserDetails[] call() throws Exception {
-                try{
-                    return getDetails(uc, time);
-                }
-                catch(IOException | FirebaseException | JacksonUtilityException e1)
-                {}
-                return new UserDetails[0];
-            }
-        };
-        // binds progress of progress bars to progress of task:
-        pForm.activateProgressBar(get_details);
-        get_details.setOnSucceeded(e -> {
-            UserDetails[] ud = get_details.getValue();
-            for(int i=0;i<ud.length;i++)
-            {
-                if(ud[i]!=null)
-                {
-                    list_summary.getItems().add(new Label(ud[i].finalBalance()));
-                }
-            }
-            pForm.getDialogStage().close();
-        });
-        pForm.getDialogStage().show();
-        exec.execute(get_details);
-        //
-        Task<GroupDetails[]> get_gdetails = new Task<GroupDetails[]>() {
-            @Override
-            public GroupDetails[] call() throws Exception {
-                try{
-                    return getGroupDetails(time);
-                }
-                catch(IOException | FirebaseException | JacksonUtilityException e1)
-                {}
-                return new GroupDetails[0];
-            }
-        };
-
-        get_gdetails.setOnSucceeded(e -> {
-            GroupDetails[] gd = get_gdetails.getValue();
-            for(int i =0; i<gd.length;i++)
-            {
-                if(gd[i]!=null)
-                {
-                    list_history.getItems().add(new Label(gd[i].Display()));
-                }
-            }
-        });
-        exec1.execute(get_gdetails);
-        Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
+        Timeline quarterSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(0.25), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 Task<UserDetails[]> get_details = new Task<UserDetails[]>() {
@@ -101,7 +58,7 @@ public class GroupScreen {
                         try{
                             return getDetails(uc, time);
                         }
-                        catch(IOException | FirebaseException | JacksonUtilityException e1)
+                        catch(IOException | FirebaseException e1)
                         {}
                         return new UserDetails[0];
                     }
@@ -125,7 +82,7 @@ public class GroupScreen {
                         try{
                             return getGroupDetails(time);
                         }
-                        catch(IOException | FirebaseException | JacksonUtilityException e1)
+                        catch(IOException | FirebaseException e1)
                         {}
                         return new GroupDetails[0];
                     }
@@ -144,6 +101,60 @@ public class GroupScreen {
                 exec1.execute(get_gdetails);
             }
         }));
+        Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Task<UserDetails[]> get_details = new Task<UserDetails[]>() {
+                    @Override
+                    public UserDetails[] call() throws Exception {
+                        try{
+                            return getDetails(uc, time);
+                        }
+                        catch(IOException | FirebaseException e1)
+                        {}
+                        return new UserDetails[0];
+                    }
+                };
+                get_details.setOnSucceeded(e -> {
+                    UserDetails[] ud = get_details.getValue();
+                    list_summary.getItems().clear();
+                    for(int i=0;i<ud.length;i++)
+                    {
+                        if(ud[i]!=null)
+                        {
+                            list_summary.getItems().add(new Label(ud[i].finalBalance()));
+                        }
+                    }
+                });
+                exec.execute(get_details);
+                //
+                Task<GroupDetails[]> get_gdetails = new Task<GroupDetails[]>() {
+                    @Override
+                    public GroupDetails[] call() throws Exception {
+                        try{
+                            return getGroupDetails(time);
+                        }
+                        catch(IOException | FirebaseException e1)
+                        {}
+                        return new GroupDetails[0];
+                    }
+                };
+                get_gdetails.setOnSucceeded(e -> {
+                    GroupDetails[] gd = get_gdetails.getValue();
+                    list_history.getItems().clear();
+                    for(int i =0; i<gd.length;i++)
+                    {
+                        if(gd[i]!=null)
+                        {
+                            list_history.getItems().add(new Label(gd[i].Display()));
+                        }
+                    }
+                });
+                exec1.execute(get_gdetails);
+            }
+        }));
+        quarterSecondsWonder.setCycleCount(2);
+        quarterSecondsWonder.play();
         fiveSecondsWonder.setCycleCount(Timeline.INDEFINITE);
         fiveSecondsWonder.play();
 
@@ -151,7 +162,7 @@ public class GroupScreen {
             @Override
             public void handle(ActionEvent event) {
                 fiveSecondsWonder.stop();
-                loginManager.newExpense(uc, time);
+                loginManager.newExpense(uc, time, groupname);
             }
         });
         back.setOnAction(new EventHandler<ActionEvent>() {

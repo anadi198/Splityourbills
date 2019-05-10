@@ -6,10 +6,8 @@ import net.thegreshams.firebase4j.error.JacksonUtilityException;
 import net.thegreshams.firebase4j.model.FirebaseResponse;
 import net.thegreshams.firebase4j.service.Firebase;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
@@ -49,7 +47,7 @@ public class DB {
         dataMap1.put("Owner", "\"somebody\"");
         firebase3.patch(time, dataMap1);
     }
-    public static GroupDetails[] getGroupDetails(String time) throws FirebaseException, IOException, JacksonUtilityException
+    public static GroupDetails[] getGroupDetails(String time) throws FirebaseException, IOException
     {
         Firebase firebase = new Firebase(firebase_baseUrl+"/Groups/Data/"+time);
         FirebaseResponse response = firebase.get();
@@ -82,7 +80,7 @@ public class DB {
 
         return gd;
     }
-    public static UserDetails[] getDetails(UserCred uc, String time) throws FirebaseException, IOException, JacksonUtilityException
+    public static UserDetails[] getDetails(UserCred uc, String time) throws FirebaseException, IOException
     {
         String Url = "https://splityourbills.firebaseio.com/"+uc.username;
         Firebase firebase = new Firebase(Url);
@@ -118,7 +116,7 @@ public class DB {
         }
         return ud;
     }
-    public static void updateGroup(String time, UserCred uc, String description, Double amount, ObservableList selectedUsers) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    public static void updateGroup(String time, UserCred uc, String description, Double amount, ObservableList selectedUsers) throws FirebaseException, IOException, JacksonUtilityException
     {
         Firebase firebase = new Firebase( firebase_baseUrl+"/Groups/Data/"+time );
         FirebaseResponse response;
@@ -132,7 +130,7 @@ public class DB {
         String current_time = Long.toString(time_curr);
         response = firebase.put(current_time, dataMap);
     }
-    public static void oweUser(UserCred uc, String nickname, Double amount) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    public static void oweUser(UserCred uc, String nickname, Double amount) throws FirebaseException, IOException, JacksonUtilityException
     {
         nickname.replace("\"","");
         Firebase firebase = new Firebase( firebase_baseUrl+"/"+nickname );
@@ -182,7 +180,7 @@ public class DB {
         dataMap.put("Balance", balance);
         response = firebase.patch(nickname.replace("\"",""), dataMap);
     }
-    public static Group[] findGroups(String nick) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    public static Group[] findGroups(String nick) throws FirebaseException, IOException
     {
         String Url = "https://splityourbills.firebaseio.com/"+nick;
         Firebase firebase = new Firebase(Url);
@@ -223,7 +221,7 @@ public class DB {
         }
         return g;
     }
-    public static ArrayList<String> findUsers(String time) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    public static ArrayList<String> findUsers(String time) throws FirebaseException, IOException
     {
         ArrayList<String> users = new ArrayList<>();
         String Url = "https://splityourbills.firebaseio.com/Groups/"+time;
@@ -262,7 +260,7 @@ public class DB {
             firebase1.patch(t, dataMap3);
         }
     }
-    public static String getUsername(String localId) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    public static String getUsername(String localId) throws FirebaseException, IOException
     {
         Firebase firebase = new Firebase( firebase_baseUrl );
         localId = localId.replace("\"","%22");
@@ -273,7 +271,7 @@ public class DB {
         String nick = nickNode.toString().replace("\""," ").trim();
         return nick;
     }
-    public static void storeUser(String localId, String nickname, String email) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    public static void storeUser(String localId, String nickname, String email) throws FirebaseException, IOException, JacksonUtilityException
     {
         Firebase firebase = new Firebase( firebase_baseUrl );
         FirebaseResponse response;
@@ -287,7 +285,7 @@ public class DB {
         dataMap1.put("Email", email);
         response = firebase.put(nickname,dataMap1);
     }
-    public static boolean checkUser(String nickname) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
+    public static boolean checkUser(String nickname) throws FirebaseException, IOException
     {
         Firebase firebase = new Firebase (firebase_baseUrl);
         FirebaseResponse response;
@@ -300,38 +298,6 @@ public class DB {
         {
             return false;
         }
-
-    }
-    public static void main(String[] args) throws FirebaseException, JsonParseException, JsonMappingException, IOException, JacksonUtilityException
-    {
-        // create the firebase
-        Firebase firebase = new Firebase( firebase_baseUrl );
-        // "DELETE" (the fb4jDemo-root)
-        FirebaseResponse response;
-
-
-        // "PUT" (test-map into the fb4jDemo-root)
-        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
-        dataMap.put("Hisaab", "Group created as test");
-        response = firebase.put(dataMap);
-
-
-        // "PUT" (test-map into a sub-node off of the fb4jDemo-root)
-        dataMap = new LinkedHashMap<String, Object>();
-        dataMap.put("Key_1", "{'anmol':['500','14/07/2019','7 pm', 'bread'}");
-        dataMap.put("Key_2", "{'anadi':['200','15/07/2019','7 am', 'milk'}");
-        response = firebase.put("Hisaab", dataMap);
-
-
-        response = firebase.get("hisaab");
-
-
-        // "POST" (test-map into a sub-node off of the fb4jDemo-root)
-        response = firebase.post("hisaab", dataMap);
-        System.out.println("\n\nResult of POST (for the test-POST):\n" + response);
-        System.out.println("\n");
-
-        response = firebase.delete("test-DELETE");
 
     }
 }

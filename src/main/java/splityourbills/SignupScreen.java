@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 
 public class SignupScreen {
-    public JFXButton register;
+    public JFXButton register, back;
     public JFXTextField user_id, email_text;
     @FXML
     private JFXPasswordField pwd_text, pwd_text_repeat;
@@ -97,6 +97,11 @@ public class SignupScreen {
 
                 }
             }});
+        back.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent event) {
+                loginManager.showLoginScreen();
+            }
+        });
 
     }
 }

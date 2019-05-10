@@ -45,12 +45,18 @@ public class LoginManager {
     public void logout() {
         showLoginScreen();
     }
-    public void showGroupScreen(UserCred uc, String time) {
+    public void showGroupScreen(UserCred uc, String time, String groupname) {
         primaryStage.setWidth(640);
         primaryStage.setHeight(480);
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        /**
+         * Make sure the window is at the centre of screen.
+         */
         primaryStage.setX((primScreenBounds.getWidth()-primaryStage.getWidth()) / 2);
         primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
+        /**
+         * Load the fxml file from the folder /resources/fxml/.
+         */
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/Group-screen.fxml")
@@ -59,12 +65,12 @@ public class LoginManager {
             primaryStage.setResizable(true);
             GroupScreen controller =
                     loader.<GroupScreen>getController();
-            controller.initManager(this, uc, time);
+            controller.initManager(this, uc, time, groupname);
         } catch (IOException| FirebaseException | JacksonUtilityException ex) {
             Logger.getLogger(LoginManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void newExpense(UserCred uc, String time)
+    public void newExpense(UserCred uc, String time, String groupname)
     {
 
         primaryStage.setWidth(640);
@@ -78,8 +84,14 @@ public class LoginManager {
             );
             scene.setRoot((Parent) loader.load());
             primaryStage.setResizable(true);
+            /**
+             *  Gets the controller of the fxml file loaded before.
+             */
             NewExpense controller = loader.<NewExpense>getController();
-            controller.initManager(this, uc, time);
+            /**
+             * Call the initManager method within the controller passing on all the required instances.
+             */
+            controller.initManager(this, uc, time, groupname);
         } catch (IOException | FirebaseException | JacksonUtilityException | NullPointerException e) {
             Logger.getLogger(CreateGroup.class.getName()).log(Level.SEVERE, null, e);
         }

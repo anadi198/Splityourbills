@@ -10,7 +10,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="splityourbills.GroupScreen">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="splityourbills.GroupScreen">
    <top>
       <VBox prefHeight="67.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -60,13 +60,13 @@
       </VBox>
    </top>
    <left>
-      <JFXListView fx:id="list_summary" BorderPane.alignment="CENTER">
+      <JFXListView fx:id="list_summary" stylesheets="@../css/style.css" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" />
          </BorderPane.margin></JFXListView>
    </left>
    <right>
-      <JFXListView fx:id="list_history" prefHeight="284.0" prefWidth="388.0" BorderPane.alignment="CENTER">
+      <JFXListView fx:id="list_history" prefHeight="284.0" prefWidth="388.0" stylesheets="@../css/style.css" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" />
          </BorderPane.margin>

@@ -9,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="238.0" prefWidth="542.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="splityourbills.SignupScreen">
+<BorderPane prefHeight="238.0" prefWidth="542.0" style="-fx-background-color: #FFFFFF;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="splityourbills.SignupScreen">
     <top>
         <VBox BorderPane.alignment="CENTER">
             <children>
@@ -102,6 +102,18 @@
             <JFXTextField fx:id="email_text" focusColor="#b0003a" layoutX="203.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" promptText="Your email" unFocusColor="LIGHTGRAY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <JFXPasswordField fx:id="pwd_text" focusColor="#b0003a" maxWidth="-Infinity" promptText="Your password" unFocusColor="LIGHTGRAY" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <JFXPasswordField fx:id="pwd_text_repeat" focusColor="#b0003a" maxWidth="-Infinity" promptText="Your password again" unFocusColor="LIGHTGRAY" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <JFXButton fx:id="back" buttonType="RAISED" ripplerFill="#b0003a" text="Back" GridPane.rowIndex="5">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Icons/icons8-back-24.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </JFXButton>
             </children>
         </GridPane>
     </center>
