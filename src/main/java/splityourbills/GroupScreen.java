@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -16,41 +17,97 @@ import net.thegreshams.firebase4j.error.JacksonUtilityException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import static splityourbills.DB.*;
 
 
 public class GroupScreen {
-
+    private Executor exec, exec1;
     public MenuItem menu_close, add_user, delete_user;
     public JFXListView list_summary, list_history;
     public JFXButton new_expense, back;
+    ProgressForm pForm = new ProgressForm();
 
     public void initManager(final LoginManager loginManager, UserCred uc, String time)throws FirebaseException, IOException, JacksonUtilityException
     {
-        UserDetails[] ud = getDetails(uc, time);
-        for(int i=0;i<ud.length;i++)
-        {
-            if(ud[i]!=null)
-            {
-                list_summary.getItems().add(new Label(ud[i].finalBalance()));
+        exec = Executors.newCachedThreadPool(runnable -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t ;
+        });
+        exec1 = Executors.newCachedThreadPool(runnable -> {
+            Thread t = new Thread(runnable);
+            t.setDaemon(true);
+            return t ;
+        });
+        Task<UserDetails[]> get_details = new Task<UserDetails[]>() {
+            @Override
+            public UserDetails[] call() throws Exception {
+                try{
+                    return getDetails(uc, time);
+                }
+                catch(IOException | FirebaseException | JacksonUtilityException e1)
+                {}
+                return new UserDetails[0];
             }
-        }
-        GroupDetails[] gd = getGroupDetails(time);
-        for(int i =0; i<gd.length;i++)
-        {
-            if(gd[i]!=null)
+        };
+        // binds progress of progress bars to progress of task:
+        pForm.activateProgressBar(get_details);
+        get_details.setOnSucceeded(e -> {
+            UserDetails[] ud = get_details.getValue();
+            for(int i=0;i<ud.length;i++)
             {
-                list_history.getItems().add(new Label(gd[i].Display()));
+                if(ud[i]!=null)
+                {
+                    list_summary.getItems().add(new Label(ud[i].finalBalance()));
+                }
             }
-        }
-        Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
+            pForm.getDialogStage().close();
+        });
+        pForm.getDialogStage().show();
+        exec.execute(get_details);
+        //
+        Task<GroupDetails[]> get_gdetails = new Task<GroupDetails[]>() {
+            @Override
+            public GroupDetails[] call() throws Exception {
+                try{
+                    return getGroupDetails(time);
+                }
+                catch(IOException | FirebaseException | JacksonUtilityException e1)
+                {}
+                return new GroupDetails[0];
+            }
+        };
 
+        get_gdetails.setOnSucceeded(e -> {
+            GroupDetails[] gd = get_gdetails.getValue();
+            for(int i =0; i<gd.length;i++)
+            {
+                if(gd[i]!=null)
+                {
+                    list_history.getItems().add(new Label(gd[i].Display()));
+                }
+            }
+        });
+        exec1.execute(get_gdetails);
+        Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                try{
-                    System.out.println("Refreshing...");
-                    UserDetails[] ud = getDetails(uc, time);
+                Task<UserDetails[]> get_details = new Task<UserDetails[]>() {
+                    @Override
+                    public UserDetails[] call() throws Exception {
+                        try{
+                            return getDetails(uc, time);
+                        }
+                        catch(IOException | FirebaseException | JacksonUtilityException e1)
+                        {}
+                        return new UserDetails[0];
+                    }
+                };
+                get_details.setOnSucceeded(e -> {
+                    UserDetails[] ud = get_details.getValue();
                     list_summary.getItems().clear();
                     for(int i=0;i<ud.length;i++)
                     {
@@ -59,7 +116,22 @@ public class GroupScreen {
                             list_summary.getItems().add(new Label(ud[i].finalBalance()));
                         }
                     }
-                    GroupDetails[] gd = getGroupDetails(time);
+                });
+                exec.execute(get_details);
+                //
+                Task<GroupDetails[]> get_gdetails = new Task<GroupDetails[]>() {
+                    @Override
+                    public GroupDetails[] call() throws Exception {
+                        try{
+                            return getGroupDetails(time);
+                        }
+                        catch(IOException | FirebaseException | JacksonUtilityException e1)
+                        {}
+                        return new GroupDetails[0];
+                    }
+                };
+                get_gdetails.setOnSucceeded(e -> {
+                    GroupDetails[] gd = get_gdetails.getValue();
                     list_history.getItems().clear();
                     for(int i =0; i<gd.length;i++)
                     {
@@ -68,12 +140,8 @@ public class GroupScreen {
                             list_history.getItems().add(new Label(gd[i].Display()));
                         }
                     }
-                }
-                catch(FirebaseException | IOException | JacksonUtilityException e)
-                {
-
-                }
-
+                });
+                exec1.execute(get_gdetails);
             }
         }));
         fiveSecondsWonder.setCycleCount(Timeline.INDEFINITE);

@@ -18,17 +18,6 @@ import java.util.regex.Pattern;
 
 
 public class SignupScreen {
-//    private Scene scene1, scene3;
-//    private Main main;
-
-//    public void setMain(Main main){this.main = main;}
-//    public void setScene1(Scene scene1){this.scene1 = scene1;}
-//    public void setScene3(Scene scene3){this.scene3 = scene3;}
-    // this method is called by clicking the button
-//    @FXML
-//    public void goBack(){main.setScene(scene1);}
-//    @FXML
-//    public void goAhead(){main.setScene(scene3);}
     public JFXButton register;
     public JFXTextField user_id, email_text;
     @FXML

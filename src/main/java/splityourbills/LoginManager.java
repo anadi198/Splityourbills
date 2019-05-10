@@ -1,8 +1,10 @@
 package splityourbills;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import net.thegreshams.firebase4j.error.FirebaseException;
 import net.thegreshams.firebase4j.error.JacksonUtilityException;
@@ -46,13 +48,15 @@ public class LoginManager {
     public void showGroupScreen(UserCred uc, String time) {
         primaryStage.setWidth(640);
         primaryStage.setHeight(480);
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setX((primScreenBounds.getWidth()-primaryStage.getWidth()) / 2);
+        primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/Group-screen.fxml")
             );
             scene.setRoot((Parent) loader.load());
             primaryStage.setResizable(true);
-            primaryStage.setMinHeight(480);
             GroupScreen controller =
                     loader.<GroupScreen>getController();
             controller.initManager(this, uc, time);
@@ -65,13 +69,15 @@ public class LoginManager {
 
         primaryStage.setWidth(640);
         primaryStage.setHeight(480);
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setX((primScreenBounds.getWidth()-primaryStage.getWidth()) / 2);
+        primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/new-expense.fxml")
             );
             scene.setRoot((Parent) loader.load());
             primaryStage.setResizable(true);
-            primaryStage.setMinHeight(480);
             NewExpense controller = loader.<NewExpense>getController();
             controller.initManager(this, uc, time);
         } catch (IOException | FirebaseException | JacksonUtilityException | NullPointerException e) {
@@ -97,6 +103,9 @@ public class LoginManager {
         try {
             primaryStage.setWidth(487);
             primaryStage.setHeight(200);
+            Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+            primaryStage.setX((primScreenBounds.getWidth()-primaryStage.getWidth()) / 2);
+            primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/Login-screen.fxml")
             );
@@ -113,6 +122,9 @@ public class LoginManager {
         try {
             primaryStage.setWidth(487);
             primaryStage.setHeight(300);
+            Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+            primaryStage.setX((primScreenBounds.getWidth()-primaryStage.getWidth()) / 2);
+            primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/Signup-screen.fxml")
             );
@@ -128,6 +140,9 @@ public class LoginManager {
     public void showMainView(UserCred uc) {
         primaryStage.setWidth(640);
         primaryStage.setHeight(480);
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setX((primScreenBounds.getWidth()-primaryStage.getWidth()) / 2);
+        primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/Welcome-screen.fxml")
