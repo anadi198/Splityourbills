@@ -62,7 +62,7 @@ public class LoginManager {
                     getClass().getResource("/fxml/Group-screen.fxml")
             );
             scene.setRoot((Parent) loader.load());
-            primaryStage.setResizable(true);
+            primaryStage.setResizable(false);
             GroupScreen controller =
                     loader.<GroupScreen>getController();
             controller.initManager(this, uc, time, groupname);
@@ -78,6 +78,7 @@ public class LoginManager {
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
         primaryStage.setX((primScreenBounds.getWidth()-primaryStage.getWidth()) / 2);
         primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
+        primaryStage.setResizable(false);
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/new-expense.fxml")
@@ -137,6 +138,7 @@ public class LoginManager {
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
             primaryStage.setX((primScreenBounds.getWidth()-primaryStage.getWidth()) / 2);
             primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
+            primaryStage.setResizable(false);
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/Signup-screen.fxml")
             );
@@ -160,7 +162,7 @@ public class LoginManager {
                     getClass().getResource("/fxml/Welcome-screen.fxml")
             );
             scene.setRoot((Parent) loader.load());
-            primaryStage.setResizable(true);
+            primaryStage.setResizable(false);
             WelcomeScreen controller =
                     loader.<WelcomeScreen>getController();
             controller.initUsername(this, uc);
