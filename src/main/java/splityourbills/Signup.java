@@ -15,7 +15,7 @@ public class Signup {
         String firebase_baseUrl = "https://splityourbills.firebaseio.com/";
 
         // get the api-key (ie: 'tR7u9Sqt39qQauLzXmRycXag18Z2')
-        String firebase_apiKey = "AIzaSyAyLMUYMdIjiy5oJDcYqpoV-oeoJTtnF-8";
+        String firebase_apiKey = "AIzaSyCCVHEvBSNmUF86BKBXxD3cteuXJbzuSc8";
 
         // create the firebase
         Firebase firebase = new Firebase( firebase_baseUrl );

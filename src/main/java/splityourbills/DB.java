@@ -19,7 +19,7 @@ public class DB {
     public static String firebase_baseUrl = "https://splityourbills.firebaseio.com";
 
     // get the api-key (ie: 'tR7u9Sqt39qQauLzXmRycXag18Z2')
-    public static String firebase_apiKey = "AIzaSyAyLMUYMdIjiy5oJDcYqpoV-oeoJTtnF-8";
+    public static String firebase_apiKey = "AIzaSyCCVHEvBSNmUF86BKBXxD3cteuXJbzuSc8";
     public static void addUser(String time, ArrayList<String> arrStr)throws FirebaseException, IOException, JacksonUtilityException
     {
         String nick = arrStr.get(0);
@@ -118,6 +118,8 @@ public class DB {
     }
     public static void updateGroup(String time, UserCred uc, String description, Double amount, ObservableList selectedUsers) throws FirebaseException, IOException, JacksonUtilityException
     {
+        int size = selectedUsers.size();
+        amount = amount*(size+1);
         Firebase firebase = new Firebase( firebase_baseUrl+"/Groups/Data/"+time );
         FirebaseResponse response;
         Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
@@ -143,6 +145,11 @@ public class DB {
             JsonNode rootNode = objectMapper.readTree(response.getRawBody());
             JsonNode memberNode = rootNode.path("Balance");
             balance = Double.parseDouble(memberNode.toString()); //if it's negative then nickname owes uc.nickname
+            System.out.println(amount + "AMOUNT IS THIS ");
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
             balance -= amount;
         }
         else

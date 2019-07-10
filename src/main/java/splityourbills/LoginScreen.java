@@ -62,6 +62,7 @@ public class LoginScreen
                          {
                              try{
                                  return Signin.signIn(email, password);
+                                 //return "stuff";
                              }
                              catch(IOException | JacksonUtilityException | FirebaseException e)
                              {
@@ -85,6 +86,7 @@ public class LoginScreen
                                      {
                                          try{
                                              return DB.getUsername(localID);
+                                             //return "User1";
                                          }
                                          catch(IOException | FirebaseException e)
                                          {

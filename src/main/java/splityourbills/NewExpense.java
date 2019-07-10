@@ -78,9 +78,10 @@ public class NewExpense
                     {
 
                         amount = amount/(size+1);
+                        System.out.println(amount + "AMOUNT AFTER DIVIDE");
                         for (String each: selectedUsers)
                         {
-                            System.out.println(each);
+                            //System.out.println(each);
                             Task<String> owe_user = new Task<String>(){
                                 @Override
                                 public String call()
@@ -88,6 +89,7 @@ public class NewExpense
                                     try{
                                         DB.oweUser(uc, each, amount);
                                         DB.oweThem(uc, each, amount);
+                                        //System.out.println("ONCE");
                                     }
                                     catch(IOException | JacksonUtilityException | FirebaseException e)
                                     {
@@ -104,7 +106,6 @@ public class NewExpense
                             pForm.getDialogStage().show();
                             exec.execute(owe_user);
                         }
-                        amount = amount*(size+1);
                         Task<String> update = new Task<String>(){
                             @Override
                             public String call()

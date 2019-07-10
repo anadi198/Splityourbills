@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="javafx" name="Splityourbills">
-    <output-path>I:/splitbuild/artifacts/Splityourbills</output-path>
+    <output-path>$USER_HOME$/splityourbillsout</output-path>
     <properties id="javafx-properties">
       <options>
         <option name="appClass" value="splityourbills.Main" />

@@ -62,6 +62,7 @@ public class WelcomeScreen
             {
                 groups[i].name = groups[i].name.replace("\"","");
                 listView.getItems().add(new Label((i+1)+ ". " + groups[i].name));
+                //listView.getItems().add(new Label("Groups are shown here.")); //remove this
             }
             listView.setOnMouseClicked(new ListViewHandler(){
                 @Override
